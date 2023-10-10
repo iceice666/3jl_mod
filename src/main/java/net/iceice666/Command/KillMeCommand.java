@@ -1,5 +1,6 @@
 package net.iceice666.Command;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,6 +27,6 @@ public final class KillMeCommand {
 
         source.sendFeedback(() -> Text.literal("You have been killed!"), false);
 
-        return 1;
+        return Command.SINGLE_SUCCESS;
     }
 }

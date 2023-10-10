@@ -1,9 +1,7 @@
 package net.iceice666;
 
 import net.fabricmc.api.ModInitializer;
-
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.iceice666.Command.KillMeCommand;
+import net.iceice666.Command.CommandRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +19,8 @@ public class Mod implements ModInitializer {
 
         LOGGER.info("Welcome to use 3JL custom server mod!");
 
+        new CommandRegister();
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> KillMeCommand.register(dispatcher));
 
     }
 

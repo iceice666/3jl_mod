@@ -1,9 +1,9 @@
 {
 	"required": true,
-	"package": "com.example.mixin",
+	"package": "net.iceice666.mixin.client",
 	"compatibilityLevel": "JAVA_17",
-	"mixins": [
-		"ExampleMixin"
+	"client": [
+      "ModClientMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

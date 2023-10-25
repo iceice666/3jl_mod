@@ -19,6 +19,7 @@ public class Mod implements ModInitializer {
         LOGGER.info("Welcome to use 3JL custom server mod!");
 
         new CommandRegister();
+        new ItemRegister();
 
 
     }

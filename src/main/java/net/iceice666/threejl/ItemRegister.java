@@ -10,17 +10,26 @@ package net.iceice666.threejl;
 // Make sure have right texture(pack) for it.
 
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.util.ActionResult;
+import net.iceice666.threejl.items.Dice;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
+import net.minecraft.world.World;
 
 public class ItemRegister {
     public ItemRegister() {
-        UseItemCallback.EVENT.register((player, world, hand) -> {
-            return null;
-        });
+        UseItemCallback.EVENT.register(Dice::register);
+    }
+
+    public static boolean isPlayerInSurvival(PlayerEntity player) {
+        return !player.isSpectator();
     }
 
 
     public interface Item {
-        public ActionResult register();
+        static TypedActionResult<ItemStack> register(PlayerEntity player, World world, Hand hand) {
+            return null;
+        }
     }
 }

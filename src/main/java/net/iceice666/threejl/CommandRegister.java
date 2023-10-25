@@ -1,8 +1,7 @@
-package net.iceice666.Command;
+package net.iceice666.threejl;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-
-
+import net.iceice666.threejl.command.KillMeCommand;
 // This is the place you add your command here
 // You may need some code template
 
@@ -31,7 +30,9 @@ public final class MyCommand {
 
 public class CommandRegister {
     public CommandRegister() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> KillMeCommand.register(dispatcher));
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> MailCommand.register(dispatcher));
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
+                KillMeCommand.register(dispatcher)
+        );
+
     }
 }

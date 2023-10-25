@@ -1,7 +1,6 @@
-package net.iceice666;
+package net.iceice666.threejl;
 
 import net.fabricmc.api.ModInitializer;
-import net.iceice666.Command.CommandRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -17,10 +17,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"net.iceice666.Mod"
+			"net.iceice666.threejl.Mod"
 		],
 		"client": [
-			"net.iceice666.ModClient"
+			"net.iceice666.threejl.ModClient"
 		]
 	},
 	"mixins": [

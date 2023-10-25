@@ -1,4 +1,4 @@
-package net.iceice666.mixin.client;
+package net.iceice666.threejl.mixin.client;
 
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;

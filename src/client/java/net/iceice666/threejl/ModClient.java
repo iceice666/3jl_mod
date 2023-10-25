@@ -1,4 +1,4 @@
-package net.iceice666;
+package net.iceice666.threejl;
 
 import net.fabricmc.api.ClientModInitializer;
 

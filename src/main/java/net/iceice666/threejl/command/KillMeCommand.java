@@ -1,4 +1,4 @@
-package net.iceice666.Command;
+package net.iceice666.threejl.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;

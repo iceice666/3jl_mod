@@ -9,7 +9,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
-import static net.iceice666.threejl.ItemRegister.isPlayerInSurvival;
+import static net.iceice666.threejl.ItemRegister.utils.isPlayerInSurvival;
 
 public class Dice implements ItemRegister.Item {
 

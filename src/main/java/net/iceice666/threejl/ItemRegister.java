@@ -22,8 +22,10 @@ public class ItemRegister {
         UseItemCallback.EVENT.register(Dice::register);
     }
 
-    public static boolean isPlayerInSurvival(PlayerEntity player) {
-        return !player.isSpectator();
+    public static class utils {
+        public static boolean isPlayerInSurvival(PlayerEntity player) {
+            return !player.isSpectator();
+        }
     }
 
 

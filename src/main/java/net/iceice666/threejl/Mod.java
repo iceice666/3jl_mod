@@ -1,6 +1,7 @@
 package net.iceice666.threejl;
 
 import net.fabricmc.api.ModInitializer;
+import net.iceice666.threejl.registers.Register;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,9 +19,7 @@ public class Mod implements ModInitializer {
 
         LOGGER.info("Welcome to use 3JL custom server mod!");
 
-        new CommandRegister();
-        new ItemRegister();
-
+        new Register();
 
     }
 

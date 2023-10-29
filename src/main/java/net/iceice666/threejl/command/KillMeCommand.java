@@ -3,7 +3,7 @@ package net.iceice666.threejl.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.iceice666.threejl.CommandRegister;
+import net.iceice666.threejl.registers.CommandRegister;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;

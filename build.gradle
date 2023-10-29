@@ -21,8 +21,10 @@ repositories {
 loom {
     splitEnvironmentSourceSets()
 
+	accessWidenerPath = file("src/main/resources/.accesswidener")
+
 	mods {
-		"modid" {
+		"threejl" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}

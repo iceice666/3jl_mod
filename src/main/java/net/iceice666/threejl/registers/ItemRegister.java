@@ -1,4 +1,4 @@
-package net.iceice666.threejl;
+package net.iceice666.threejl.registers;
 // This is the place you add your item here
 // You may need some code template
 

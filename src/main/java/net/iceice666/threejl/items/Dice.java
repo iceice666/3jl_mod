@@ -1,6 +1,6 @@
 package net.iceice666.threejl.items;
 
-import net.iceice666.threejl.ItemRegister;
+import net.iceice666.threejl.registers.ItemRegister;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -9,7 +9,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
-import static net.iceice666.threejl.ItemRegister.utils.isPlayerInSurvival;
+import static net.iceice666.threejl.registers.ItemRegister.utils.isPlayerInSurvival;
 
 public class Dice implements ItemRegister.Item {
 

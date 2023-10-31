@@ -1,3 +1,8 @@
 accessWidener	v1	named
 
+accessible field net/minecraft/block/entity/ChestBlockEntity inventory Lnet/minecraft/util/collection/DefaultedList;
+accessible method net/minecraft/block/entity/ChestBlockEntity setInvStackList (Lnet/minecraft/util/collection/DefaultedList;)V
+accessible method net/minecraft/entity/LivingEntity dropXp ()V
 accessible method net/minecraft/entity/LivingEntity drop (Lnet/minecraft/entity/damage/DamageSource;)V
+accessible field net/minecraft/entity/player/PlayerInventory combinedInventory Ljava/util/List;
+accessible method net/minecraft/item/CompassItem writeNbt (Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/nbt/NbtCompound;)V

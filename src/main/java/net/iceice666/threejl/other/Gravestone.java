@@ -59,6 +59,7 @@ public class Gravestone {
         BlockState chestState = Blocks.CHEST.getDefaultState();
         chestState.with(ChestBlock.FACING, Direction.NORTH);
 
+
         ChestBlockEntity chestEntity1 = new ChestBlockEntity(blockPos, chestState);
         ChestBlockEntity chestEntity2 = new ChestBlockEntity(blockPos.east(), chestState);
 
@@ -74,7 +75,14 @@ public class Gravestone {
             for (int i = 0; i < list.size(); ++i) {
                 ItemStack itemStack = list.get(i);
 
-                if (itemStack.isEmpty() || (itemStack.hasNbt() && itemStack.getNbt().getBoolean(AVOID_DROP_NBT_KEY)))
+                if (
+                        itemStack.isEmpty() ||
+                                (itemStack.hasNbt() &&
+                                        (
+                                                itemStack.getNbt().getBoolean(AVOID_DROP_NBT_KEY)
+                                                        || itemStack.getNbt().getBoolean(IS_GRAVESTONE_NBT_KEY)
+                                        )
+                                ))
                     continue;
 
                 if (chestInventory1Counter <= 27) {
@@ -90,11 +98,17 @@ public class Gravestone {
         }
 
 
-        chestEntity1.setInvStackList(chestInventory1);
-        chestEntity2.setInvStackList(chestInventory2);
+        if (chestInventory1Counter > 0) {
+            chestEntity1.setInvStackList(chestInventory1);
+            serverWorld.setBlockState(blockPos, chestEntity1.getCachedState());
+            serverWorld.addBlockEntity(chestEntity1);
+        }
 
-        serverWorld.setBlockState(blockPos, chestEntity1.getCachedState());
-        serverWorld.setBlockState(blockPos.east(), chestEntity2.getCachedState());
+        if (chestInventory2Counter > 0) {
+            chestEntity2.setInvStackList(chestInventory2);
+            serverWorld.setBlockState(blockPos.east(), chestEntity2.getCachedState());
+            serverWorld.addBlockEntity(chestEntity2);
+        }
 
 
         CompassItem compass = (CompassItem) Items.COMPASS;

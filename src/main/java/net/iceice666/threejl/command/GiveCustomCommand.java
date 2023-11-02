@@ -80,6 +80,8 @@ public class GiveCustomCommand implements CommandRegister.Command {
     public static ItemStack getCustomItem(String nbtKey, int mount) {
         NbtCompound nbtCompound = new NbtCompound();
         nbtCompound.putBoolean(nbtKey, true);
+        nbtCompound.putInt("RepairCost", 114514);
+
 
         ItemStack itemStack = Items.CARROT_ON_A_STICK.getDefaultStack();
         itemStack.setCount(1);

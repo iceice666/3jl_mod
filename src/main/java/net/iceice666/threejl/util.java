@@ -37,6 +37,19 @@ public class util {
         player.currentScreenHandler.sendContentUpdates();
     }
 
+    public static ItemStack damageItem(ItemStack item, int mount) {
+        if (item.hasNbt() && item.getNbt().getBoolean("UNBREAKABLE")) return item;
+
+        item.setDamage(item.getDamage() + mount);
+
+        if (item.getDamage() >= item.getMaxDamage()) {
+            return ItemStack.EMPTY;
+        }
+
+        return item;
+
+    }
+
 
     public static int checkPlayerInventoryContainsNbtItem(PlayerInventory playerInventory, String nbtString) {
         int slot = -1;

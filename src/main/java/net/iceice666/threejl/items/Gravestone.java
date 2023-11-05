@@ -1,4 +1,4 @@
-package net.iceice666.threejl.other;
+package net.iceice666.threejl.items;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

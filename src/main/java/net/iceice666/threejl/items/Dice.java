@@ -3,7 +3,6 @@ package net.iceice666.threejl.items;
 import net.iceice666.threejl.registers.ItemRegister;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -20,21 +19,18 @@ public class Dice implements ItemRegister.Item {
 
         ) {
             ItemStack itemStack = player.getMainHandStack();
-            if (itemStack.isOf(net.minecraft.item.Items.CARROT_ON_A_STICK)) {
+            if (
+                    itemStack.isOf(net.minecraft.item.Items.CARROT_ON_A_STICK) &&
+                            itemStack.hasNbt() && itemStack.getNbt().getInt("CustomModelData") == 2
+            ) {
 
-                NbtCompound itemNbt = itemStack.getNbt();
-                if (itemNbt != null) {
-                    int n = itemNbt.getInt("CustomModelData");
+                int random = ((int) (Math.random() * 6)) + 1;
 
-                    if (n == 2) {
+                player.sendMessage(Text.of("You rolled " + random + "!"), false);
 
-                        int random = ((int) (Math.random() * 6)) + 1;
 
-                        player.sendMessage(Text.of("You rolled " + random + "!"), false);
-                    }
+                return TypedActionResult.success(itemStack);
 
-                    return TypedActionResult.success(ItemStack.EMPTY);
-                }
             }
 
 

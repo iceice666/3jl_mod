@@ -25,12 +25,15 @@ import static net.iceice666.threejl.util.givePlayerItem;
 
 public class Gravestone {
 
-    public static final String AVOID_DROP_NBT_KEY = "is_item_avoid_drop";
-    public static final String IS_TOTEM_OF_KEEP_INVENTORY_NBT_KEY = "is_totem_of_keep_inventory";
-    public static final String IS_GRAVESTONE_NBT_KEY = "is_gravestone";
+    public static final String IS_ITEM_AVOID_DROP = "is_item_avoid_drop";
+    public static final String IS_TOTEM_OF_KEEP_INVENTORY = "is_totem_of_keep_inventory";
+    public static final String IS_GRAVESTONE = "is_gravestone";
+
+
     public static Set<String> whitelist = Set.of(
             "22bd9801-acd6-4e7e-ab14-9f53df1f42f7" // @jack0301
             , "75f6ec8c-6339-4a88-84d8-34afe4a38a1d" //@KSHSlime
+            , "61353ed0-f03c-40a4-9363-e3257b2dee34" //@coffeecat2006
     );
 
 
@@ -79,8 +82,8 @@ public class Gravestone {
                         itemStack.isEmpty() ||
                                 (itemStack.hasNbt() &&
                                         (
-                                                itemStack.getNbt().getBoolean(AVOID_DROP_NBT_KEY)
-                                                        || itemStack.getNbt().getBoolean(IS_GRAVESTONE_NBT_KEY)
+                                                itemStack.getNbt().getBoolean(IS_ITEM_AVOID_DROP)
+                                                        || itemStack.getNbt().getBoolean(IS_GRAVESTONE)
                                         )
                                 ))
                     continue;
@@ -135,7 +138,7 @@ public class Gravestone {
                         !itemStack.isEmpty()
                                 && (
                                 itemStack.getNbt() == null
-                                        || !itemStack.getNbt().getBoolean(AVOID_DROP_NBT_KEY)
+                                        || !itemStack.getNbt().getBoolean(IS_ITEM_AVOID_DROP)
                         )
                 ) {
                     player.dropItem(itemStack, true, false);

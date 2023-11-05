@@ -1,6 +1,5 @@
 package net.iceice666.threejl.items;
 
-import net.iceice666.threejl.registers.ItemRegister;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -10,7 +9,7 @@ import net.minecraft.world.World;
 
 import static net.iceice666.threejl.registers.ItemRegister.utils.isPlayerInSurvival;
 
-public class Dice implements ItemRegister.Item {
+public class Dice {
 
 
     public static TypedActionResult<ItemStack> register(PlayerEntity player, World world, Hand hand) {

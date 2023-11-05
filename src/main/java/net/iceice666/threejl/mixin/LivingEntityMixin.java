@@ -3,7 +3,6 @@ package net.iceice666.threejl.mixin;
 
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.GameRules;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,13 +36,13 @@ public abstract class LivingEntityMixin {
         PlayerInventory playerInventory = player.getInventory();
 
         // Check player's inventory
-        int totemSlot = checkPlayerInventoryContainsNbtItem(playerInventory, IS_TOTEM_OF_KEEP_INVENTORY_NBT_KEY);
+        int totemSlot = checkPlayerInventoryContainsNbtItem(playerInventory, IS_TOTEM_OF_KEEP_INVENTORY);
 
         // If this player doesn't have any totem => drop
         if (totemSlot == -1) {
 
 
-            int gravestoneSlot = checkPlayerInventoryContainsNbtItem(playerInventory, IS_GRAVESTONE_NBT_KEY);
+            int gravestoneSlot = checkPlayerInventoryContainsNbtItem(playerInventory, IS_GRAVESTONE);
 
             // If this player doesn't have any gravestone => drop
             if (gravestoneSlot == -1) {
@@ -53,8 +52,8 @@ public abstract class LivingEntityMixin {
 
 
             // Player have gravestone => remove 1
-            ItemStack item = playerInventory.getStack(gravestoneSlot);
-            player.getInventory().setStack(gravestoneSlot, damageItem(item, 1));
+            playerInventory.setStack(gravestoneSlot,
+                    damageItem(playerInventory.getStack(gravestoneSlot), 1));
 
             // create a gravestone
             boolean r = createGravestone(player);
@@ -68,8 +67,9 @@ public abstract class LivingEntityMixin {
 
 
         // Player have totem => remove 1
-        ItemStack item = playerInventory.getStack(totemSlot);
-        player.getInventory().setStack(totemSlot, damageItem(item, 1));
+
+        playerInventory.setStack(totemSlot,
+                damageItem(playerInventory.getStack(totemSlot), 1));
 
 
     }

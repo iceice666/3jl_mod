@@ -9,6 +9,8 @@ import net.minecraft.sound.SoundEvents;
 
 import java.util.List;
 
+import static net.iceice666.threejl.registers.ItemRegister.Item.IS_DISPOSABLE;
+
 public class util {
 
 
@@ -38,11 +40,12 @@ public class util {
     }
 
     public static ItemStack damageItem(ItemStack item, int mount) {
+
         if (item.hasNbt() && item.getNbt().getBoolean("UNBREAKABLE")) return item;
 
         item.setDamage(item.getDamage() + mount);
 
-        if (item.getDamage() >= item.getMaxDamage()) {
+        if (item.getDamage() >= item.getMaxDamage() || (item.hasNbt() && item.getNbt().getBoolean(IS_DISPOSABLE))) {
             return ItemStack.EMPTY;
         }
 

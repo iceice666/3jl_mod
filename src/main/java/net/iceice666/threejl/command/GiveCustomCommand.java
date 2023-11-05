@@ -11,9 +11,10 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
-import static net.iceice666.threejl.items.Gravestone.IS_GRAVESTONE_NBT_KEY;
-import static net.iceice666.threejl.items.Gravestone.IS_TOTEM_OF_KEEP_INVENTORY_NBT_KEY;
-import static net.iceice666.threejl.items.artilleries.Missile.IS_MISSILE_KEY;
+import static net.iceice666.threejl.items.Gravestone.IS_GRAVESTONE;
+import static net.iceice666.threejl.items.Gravestone.IS_TOTEM_OF_KEEP_INVENTORY;
+import static net.iceice666.threejl.items.artilleries.Missile.IS_MISSILE;
+import static net.iceice666.threejl.items.artilleries.RocketLauncher.IS_ROCKET_LAUNCHER;
 import static net.iceice666.threejl.util.givePlayerItem;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -22,9 +23,10 @@ public class GiveCustomCommand implements CommandRegister.Command {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("givecustom")
                 .requires(source -> source.hasPermissionLevel(1))
-                .then(generateCommandNode(IS_GRAVESTONE_NBT_KEY))
-                .then(generateCommandNode(IS_TOTEM_OF_KEEP_INVENTORY_NBT_KEY))
-                .then(generateCommandNode(IS_MISSILE_KEY))
+                .then(generateCommandNode(IS_GRAVESTONE))
+                .then(generateCommandNode(IS_TOTEM_OF_KEEP_INVENTORY))
+                .then(generateCommandNode(IS_MISSILE))
+                .then(generateCommandNode(IS_ROCKET_LAUNCHER))
 
         );
 

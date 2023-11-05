@@ -11,6 +11,7 @@ import static net.iceice666.threejl.registers.ItemRegister.utils.isPlayerInSurvi
 
 public class Dice {
 
+    public final static String IS_DICE = "is_dice";
 
     public static TypedActionResult<ItemStack> register(PlayerEntity player, World world, Hand hand) {
         if (isPlayerInSurvival(player)
@@ -20,7 +21,7 @@ public class Dice {
             ItemStack itemStack = player.getMainHandStack();
             if (
                     itemStack.isOf(net.minecraft.item.Items.CARROT_ON_A_STICK) &&
-                            itemStack.hasNbt() && itemStack.getNbt().getInt("CustomModelData") == 2
+                            itemStack.hasNbt() && itemStack.getNbt().getBoolean(IS_DICE)
             ) {
 
                 int random = ((int) (Math.random() * 6)) + 1;

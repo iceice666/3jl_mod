@@ -11,6 +11,9 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 import static net.iceice666.threejl.items.artilleries.Artillery.getTntEntity;
 import static net.iceice666.threejl.registers.ItemRegister.utils.isPlayerInSurvival;
 import static net.iceice666.threejl.util.damageItem;
@@ -22,7 +25,7 @@ public class Missile {
     // A constant key to check if the item has a specific NBT tag that marks it as a missile.
     public final static String IS_MISSILE = "is_missile";
     // A static Vec3d to hold the position of the target where the missile will strike.
-    static Vec3d targetPos = null;
+    static HashMap<UUID, Vec3d> targetPos = new HashMap<>();
 
     // This method handles the custom behavior when the item is used.
     public static TypedActionResult<ItemStack> register(PlayerEntity player, World world, Hand hand) {
@@ -35,6 +38,9 @@ public class Missile {
 
             // Search target by getting the item in the off-hand.
             ItemStack offhandItemStack = player.getOffHandStack();
+
+            // Get player UUID
+            UUID playerUuid = player.getUuid();
 
             // Check if the item is a carrot on a stick with the missile NBT tag.
             if (
@@ -53,14 +59,14 @@ public class Missile {
 
                 // Convert the hit position result to a Vec3d and adjust to the center of the block.
                 var hitResultPos = hitResult.getPos();
-                targetPos = new Vec3d(
+                targetPos.put(playerUuid, new Vec3d(
                         Math.floor(hitResultPos.x) + 0.5,
                         Math.floor(hitResultPos.y) + 1.5,
                         Math.floor(hitResultPos.z) + 0.5
-                );
+                ));
 
                 // If the target is above the world's max height or blow the world's min height, ignore it.
-                if (targetPos.getY() > 320 || targetPos.getY() < -64) {
+                if (targetPos.get(playerUuid).getY() > 320 || targetPos.get(playerUuid).getY() < -64) {
                     return TypedActionResult.pass(ItemStack.EMPTY);
                 }
 
@@ -70,12 +76,12 @@ public class Missile {
                 } else {
                     // Otherwise, increase the distance and try again.
                     distance += 0.25f;
-                    targetPos = null;
+                    targetPos.put(playerUuid, null);
                 }
             }
 
             // Send a message to the player with the coordinates of the target.
-            player.sendMessage(Text.of("Target found at" + targetPos));
+            player.sendMessage(Text.of("Target found at" + targetPos.get(playerUuid)));
 
             return TypedActionResult.success(offhandItemStack);
 
@@ -85,15 +91,18 @@ public class Missile {
             // Get the item in the main hand.
             ItemStack mainhandItemStack = player.getMainHandStack();
 
+            // Get player UUID
+            UUID playerUuid = player.getUuid();
+
             // Check if the item is a carrot on a stick with the missile NBT tag and a target has been set.
             if (
                     !(mainhandItemStack.isOf(net.minecraft.item.Items.CARROT_ON_A_STICK) &&
                             mainhandItemStack.hasNbt() && mainhandItemStack.getNbt().getBoolean(IS_MISSILE) &&
-                            targetPos != null)
+                            targetPos.get(playerUuid) != null)
             ) return TypedActionResult.pass(ItemStack.EMPTY);
 
             // Get the adjusted tnt entity.
-            TntEntity tntEntity = getTntEntity(player, world, targetPos);
+            TntEntity tntEntity = getTntEntity(player, world, targetPos.get(playerUuid));
             // Add the primed TNT to the world, launching the missile.
             world.spawnEntity(tntEntity);
 

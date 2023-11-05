@@ -36,24 +36,32 @@ public abstract class LivingEntityMixin {
         PlayerInventory playerInventory = player.getInventory();
 
         // Check player's inventory
-        int totemSlot = checkPlayerInventoryContainsNbtItem(playerInventory, IS_TOTEM_OF_KEEP_INVENTORY);
+        int[] totemSlot = checkPlayerInventoryContainsNbtItem(playerInventory, IS_TOTEM_OF_KEEP_INVENTORY);
 
         // If this player doesn't have any totem => drop
-        if (totemSlot == -1) {
+        if (totemSlot[0] == -1) {
 
 
-            int gravestoneSlot = checkPlayerInventoryContainsNbtItem(playerInventory, IS_GRAVESTONE);
+            int[] gravestoneSlot = checkPlayerInventoryContainsNbtItem(playerInventory, IS_GRAVESTONE);
 
             // If this player doesn't have any gravestone => drop
-            if (gravestoneSlot == -1) {
+            if (gravestoneSlot[0] == -1) {
                 dropAll(player);
                 return;
             }
 
 
             // Player have gravestone => remove 1
-            playerInventory.setStack(gravestoneSlot,
-                    damageItem(playerInventory.getStack(gravestoneSlot), 1));
+            playerInventory.combinedInventory
+                    .get(gravestoneSlot[0])
+                    .set(
+                            gravestoneSlot[1]
+                            , damageItem(
+                                    playerInventory.combinedInventory
+                                            .get(gravestoneSlot[0])
+                                            .get(gravestoneSlot[1]),
+                                    1)
+                    );
 
             // create a gravestone
             boolean r = createGravestone(player);
@@ -68,8 +76,16 @@ public abstract class LivingEntityMixin {
 
         // Player have totem => remove 1
 
-        playerInventory.setStack(totemSlot,
-                damageItem(playerInventory.getStack(totemSlot), 1));
+        playerInventory.combinedInventory
+                .get(totemSlot[0])
+                .set(
+                        totemSlot[1]
+                        , damageItem(
+                                playerInventory.combinedInventory
+                                        .get(totemSlot[0])
+                                        .get(totemSlot[1]),
+                                1)
+                );
 
 
     }

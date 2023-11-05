@@ -7,8 +7,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 
-import java.util.List;
-
 import static net.iceice666.threejl.registers.ItemRegister.Item.IS_DISPOSABLE;
 
 public class util {
@@ -54,22 +52,20 @@ public class util {
     }
 
 
-    public static int checkPlayerInventoryContainsNbtItem(PlayerInventory playerInventory, String nbtString) {
-        int slot = -1;
-        for (List<ItemStack> list : playerInventory.combinedInventory) {
-            for (int i = 0; i < list.size(); ++i) {
-                ItemStack itemStack = list.get(i);
+    public static int[] checkPlayerInventoryContainsNbtItem(PlayerInventory playerInventory, String nbtString) {
+
+        for (int i = 0; i < 3; ++i) {
+            var list = playerInventory.combinedInventory.get(i);
+            for (int j = 0; j < list.size(); ++j) {
+                ItemStack itemStack = list.get(j);
 
                 // If this totemSlot has an item, and it has nbt, and the AVOID_DROP key of it's nbt is not True => drop
                 if (!itemStack.isEmpty() && itemStack.getNbt() != null && itemStack.getNbt().getBoolean(nbtString)) {
-                    slot = i;
-                    break;
+                    return new int[]{i, j};
                 }
             }
-
-            if (slot != -1) break;
         }
 
-        return slot;
+        return new int[]{-1};
     }
 }

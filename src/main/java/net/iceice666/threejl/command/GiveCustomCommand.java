@@ -11,6 +11,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
+import static net.iceice666.threejl.items.Dice.IS_DICE;
 import static net.iceice666.threejl.items.Gravestone.IS_GRAVESTONE;
 import static net.iceice666.threejl.items.Gravestone.IS_TOTEM_OF_KEEP_INVENTORY;
 import static net.iceice666.threejl.items.artilleries.Missile.IS_MISSILE;
@@ -27,6 +28,7 @@ public class GiveCustomCommand implements CommandRegister.Command {
                 .then(generateCommandNode(IS_TOTEM_OF_KEEP_INVENTORY))
                 .then(generateCommandNode(IS_MISSILE))
                 .then(generateCommandNode(IS_ROCKET_LAUNCHER))
+                .then(generateCommandNode(IS_DICE))
 
         );
 

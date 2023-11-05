@@ -6,12 +6,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.CompassItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -20,8 +19,6 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import static net.iceice666.threejl.util.givePlayerItem;
 
 public class Gravestone {
 
@@ -55,7 +52,7 @@ public class Gravestone {
         while (true) {
             Block block = serverWorld.getBlockState(blockPos).getBlock();
             if (serverWorld.canSetBlock(blockPos) && block.equals(Blocks.AIR)) break;
-            blockPos = blockPos.up();
+            blockPos = (blockPos.getY() > 320) ? blockPos.down() : blockPos.up();
         }
 
 
@@ -88,7 +85,7 @@ public class Gravestone {
                                 ))
                     continue;
 
-                if (chestInventory1Counter <= 27) {
+                if (chestInventory1Counter < 27) {
                     chestInventory1.set(chestInventory1Counter, itemStack);
                     ++chestInventory1Counter;
                 } else {
@@ -114,9 +111,13 @@ public class Gravestone {
         }
 
 
-        CompassItem compass = (CompassItem) Items.COMPASS;
-        compass.writeNbt(serverWorld.getRegistryKey(), blockPos, compass.getDefaultStack().getOrCreateNbt());
-        givePlayerItem(player, compass.getDefaultStack());
+//        CompassItem compass = (CompassItem) Items.COMPASS;
+//        compass.writeNbt(serverWorld.getRegistryKey(), blockPos, compass.getDefaultStack().getOrCreateNbt());
+//        givePlayerItem(player, compass.getDefaultStack());
+
+        player.sendMessage(Text.of(
+                "Your gravestone is generated at " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ()
+        ));
 
         return true;
 

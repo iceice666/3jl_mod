@@ -6,8 +6,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.GameRules;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+
+import java.util.Set;
 
 import static net.iceice666.threejl.items.Gravestone.*;
 import static net.iceice666.threejl.util.checkPlayerInventoryContainsNbtItem;
@@ -15,7 +18,16 @@ import static net.iceice666.threejl.util.damageItem;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class LivingEntityMixin {
-
+    // A set of UUIDs that are allowed to create gravestones.
+    @Unique
+    private static final Set<String> whitelist = Set.of(
+            // UUID of player @jack0301
+            "22bd9801-acd6-4e7e-ab14-9f53df1f42f7",
+            // UUID of player @KSHSlime
+            "75f6ec8c-6339-4a88-84d8-34afe4a38a1d",
+            // UUID of player @coffeecat2006
+            "61353ed0-f03c-40a4-9363-e3257b2dee34"
+    );
 
     @Redirect(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;drop(Lnet/minecraft/entity/damage/DamageSource;)V"))
     private void replaceWithGrave(ServerPlayerEntity player, DamageSource damageSource) {

@@ -2,7 +2,6 @@ package net.iceice666.threejl.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.iceice666.threejl.registers.CommandRegister;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -13,16 +12,17 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static net.iceice666.threejl.Util.givePlayerItem;
 import static net.iceice666.threejl.items.Dice.IS_DICE;
-import static net.iceice666.threejl.items.Gravestone.IS_GRAVESTONE;
-import static net.iceice666.threejl.items.Gravestone.IS_TOTEM_OF_KEEP_INVENTORY;
 import static net.iceice666.threejl.items.artilleries.Missile.IS_MISSILE;
 import static net.iceice666.threejl.items.artilleries.RocketLauncher.IS_ROCKET_LAUNCHER;
+import static net.iceice666.threejl.items.gravestones.Gravestone.IS_GRAVESTONE;
+import static net.iceice666.threejl.items.gravestones.Gravestone.IS_TOTEM_OF_KEEP_INVENTORY;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class GiveCustomCommand implements CommandRegister.Command {
+public class GiveCustomCommand {
     private GiveCustomCommand() {
     }
+
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("givecustom")
                 .requires(source -> source.hasPermissionLevel(1))

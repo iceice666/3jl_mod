@@ -4,7 +4,12 @@ import net.minecraft.entity.TntEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.HitResult;
@@ -15,6 +20,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import static net.iceice666.threejl.Util.damageItem;
+import static net.iceice666.threejl.Util.getCurrentUnixTimestamp;
 import static net.iceice666.threejl.items.artilleries.Artillery.getTntEntity;
 import static net.iceice666.threejl.registers.ItemRegister.Utils.isPlayerInSurvival;
 
@@ -25,15 +31,82 @@ public class Missile {
     public static final String IS_MISSILE = "is_missile";
     // A static Vec3d to hold the position of the target where the missile will strike.
     static HashMap<UUID, Vec3d> targetPos = new HashMap<>();
+    static HashMap<UUID, Long> cooldown = new HashMap<>();
+    static HashMap<UUID, Long> prevClick = new HashMap<>();
 
     private Missile() {
     }
 
+
+    static boolean doOffhand(ServerPlayerEntity player) {
+        // Get target block
+        var targetBlockPos = getTargetBlock(player);
+
+        // Get player UUID
+        UUID playerUuid = player.getUuid();
+
+        // Save to map
+        targetPos.put(playerUuid, targetBlockPos);
+
+        if (targetBlockPos == null) return false;
+
+
+        // Send a response to player
+
+
+        MutableText text = ((MutableText) Text.of("Target locked! "))
+                .setStyle(
+                        Style.EMPTY
+                                .withColor(Formatting.GREEN)
+                );
+
+        text.append(((MutableText) Text.of(targetBlockPos.toString()))
+                .setStyle(
+                        Style.EMPTY
+                                .withColor(Formatting.AQUA)
+                ));
+
+
+        OverlayMessageS2CPacket overlayPacket = new OverlayMessageS2CPacket(text);
+
+        player.networkHandler.sendPacket(overlayPacket);
+
+        return true;
+    }
+
+    static boolean doMainhand(
+            ServerPlayerEntity player,
+            World world,
+            ItemStack mainhandItemStack,
+            Vec3d targetBlockPos
+    ) {
+        // Get the adjusted tnt entity.
+        TntEntity tntEntity = getTntEntity(player, world, targetBlockPos, true);
+        // Add the primed TNT to the world, launching the missile.
+        world.spawnEntity(tntEntity);
+
+
+        // Send a message to the player with a fire message.
+        player.sendMessage(Text.of("The missile will arrive in 4 sec."));
+
+        // Remove 1 of missile available count
+        PlayerInventory playerInventory = player.getInventory();
+        playerInventory.setStack(playerInventory.selectedSlot,
+                damageItem(mainhandItemStack, 1));
+
+
+        // Return the item in the main hand as the result.
+        return true;
+    }
+
     // This method handles the custom behavior when the item is used.
-    public static TypedActionResult<ItemStack> register(PlayerEntity player, World world, Hand hand) {
+    public static TypedActionResult<ItemStack> register(PlayerEntity p, World world, Hand hand) {
+
+        ServerPlayerEntity player = (ServerPlayerEntity) p;
 
         // Check if the player is not in survival mode, if so, nothing happens.
         if (!isPlayerInSurvival(player)) return TypedActionResult.pass(ItemStack.EMPTY);
+
 
         // Check if the off-hand is used.
         if (hand == Hand.OFF_HAND) {
@@ -41,8 +114,6 @@ public class Missile {
             // Search target by getting the item in the off-hand.
             ItemStack offhandItemStack = player.getOffHandStack();
 
-            // Get player UUID
-            UUID playerUuid = player.getUuid();
 
             // Check if the item is a carrot on a stick with the missile NBT tag.
             if (
@@ -50,18 +121,10 @@ public class Missile {
                             offhandItemStack.hasNbt() && offhandItemStack.getNbt().getBoolean(IS_MISSILE))
             ) return TypedActionResult.pass(ItemStack.EMPTY);
 
-            // Get target block
-            var targetBlockPos = getTargetBlock(player);
+            // Find target
+            return doOffhand(player) ?
+                    TypedActionResult.success(offhandItemStack) : TypedActionResult.pass(ItemStack.EMPTY);
 
-            // Save to map
-            targetPos.put(playerUuid, targetBlockPos);
-
-            if (targetBlockPos == null) return TypedActionResult.pass(ItemStack.EMPTY);
-
-            // Send a message to the player with the coordinates of the target.
-            player.sendMessage(Text.of("Target found at" + targetBlockPos));
-
-            return TypedActionResult.success(offhandItemStack);
 
         } else if (hand == Hand.MAIN_HAND) {
             // If the main hand is used, then it's time to fire the missile!
@@ -69,8 +132,6 @@ public class Missile {
             // Get the item in the main hand.
             ItemStack mainhandItemStack = player.getMainHandStack();
 
-            // Get player UUID
-            UUID playerUuid = player.getUuid();
 
             // Check if the item is a carrot on a stick with the missile NBT tag and a target has been set.
             if (
@@ -78,38 +139,68 @@ public class Missile {
                             mainhandItemStack.hasNbt() && mainhandItemStack.getNbt().getBoolean(IS_MISSILE))
             ) return TypedActionResult.pass(ItemStack.EMPTY);
 
+            // Get player UUID
+            UUID playerUuid = player.getUuid();
 
+
+            // Get target block
             Vec3d targetBlockPos;
-
-
             if (player.isSneaking()) {
-
-                // Get target block
                 targetBlockPos = getTargetBlock(player);
-                if (targetBlockPos == null) return TypedActionResult.pass(ItemStack.EMPTY);
-
             } else {
                 targetBlockPos = targetPos.get(playerUuid);
             }
+            // If target not found, return.
+            if (targetBlockPos == null) {
+                player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
+                        ((MutableText) Text.of("You have to set a target first!"))
+                                .setStyle(
+                                        Style.EMPTY
+                                                .withColor(Formatting.RED)
+                                )
+                ));
+                return TypedActionResult.pass(ItemStack.EMPTY);
+            }
 
-            if (null == targetBlockPos) return TypedActionResult.pass(ItemStack.EMPTY);
+
+            // Get current unix timestamp
+            var currentUnixTimestamp = getCurrentUnixTimestamp();
+
+            // If this is first click or the interval of two clicks greater than 1 sec, return.
+            if (prevClick.get(playerUuid) == null
+                    || currentUnixTimestamp - prevClick.get(playerUuid) > 1) {
+                prevClick.put(playerUuid, currentUnixTimestamp);
+                return TypedActionResult.pass(ItemStack.EMPTY);
+            }
 
 
-            // Get the adjusted tnt entity.
-            TntEntity tntEntity = getTntEntity(player, world, targetBlockPos, true);
-            // Add the primed TNT to the world, launching the missile.
-            world.spawnEntity(tntEntity);
+            // This missile is not in cooldown
+            if (cooldown.get(playerUuid) == null
+                    || (currentUnixTimestamp - cooldown.get(playerUuid) - 15) >= 0
+            ) {
+                // Set cooldown
+                cooldown.put(playerUuid, getCurrentUnixTimestamp());
+                prevClick.put(playerUuid, null);
 
-            // Send a message to the player with a fire message.
-            player.sendMessage(Text.of("The missile will arrive in 4 sec."));
+                // Launch
+                return doMainhand(player, world, mainhandItemStack, targetBlockPos) ?
+                        TypedActionResult.success(mainhandItemStack) : TypedActionResult.pass(ItemStack.EMPTY);
+            }
 
-            // Remove 1 of missile available count
-            PlayerInventory playerInventory = player.getInventory();
-            playerInventory.setStack(playerInventory.selectedSlot,
-                    damageItem(mainhandItemStack, 1));
+            // This missile is in cooldown
+            int deltaCd = (int) (currentUnixTimestamp - cooldown.get(playerUuid) - 15);
 
-            // Return the item in the main hand as the result.
-            return TypedActionResult.success(mainhandItemStack);
+            player.networkHandler.sendPacket(new OverlayMessageS2CPacket(
+                    ((MutableText) Text.of("You have to wait " + -deltaCd + " secs to launch next missile!"))
+                            .setStyle(
+                                    Style.EMPTY
+                                            .withColor(Formatting.RED)
+                                            .withFormatting(Formatting.BOLD)
+                            )
+            ));
+            return TypedActionResult.success(ItemStack.EMPTY);
+
+
         }
 
         // If none of the above conditions are met, do nothing.

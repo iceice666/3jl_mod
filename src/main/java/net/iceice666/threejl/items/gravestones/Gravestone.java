@@ -1,4 +1,4 @@
-package net.iceice666.threejl.items;
+package net.iceice666.threejl.items.gravestones;
 
 
 import net.minecraft.block.Block;
@@ -127,27 +127,5 @@ public class Gravestone {
                 || itemStack.getNbt().getBoolean(IS_GRAVESTONE)));
     }
 
-    // Method to drop all items from the player's inventory.
-    public static void dropAll(ServerPlayerEntity player) {
-        // Cause the player to drop experience orbs.
-        player.dropXp();
 
-        // Drop all items that are not marked to avoid dropping.
-        for (List<ItemStack> list : player.getInventory().combinedInventory) {
-            for (int i = 0; i < list.size(); ++i) {
-                ItemStack itemStack = list.get(i);
-                // Check NBT tags to determine if the item should be dropped.
-                if (!(
-                        itemStack.isEmpty()
-                                || (
-                                itemStack.hasNbt()
-                                        && itemStack.getNbt().getBoolean(IS_ITEM_AVOID_DROP)
-                        )
-                )) {
-                    player.dropItem(itemStack, true, false);
-                    list.set(i, ItemStack.EMPTY);
-                }
-            }
-        }
-    }
 }

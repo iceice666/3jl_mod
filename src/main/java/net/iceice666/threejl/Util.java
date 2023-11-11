@@ -47,6 +47,11 @@ public class Util {
     }
 
 
+    public static long getCurrentUnixTimestamp() {
+        return System.currentTimeMillis() / 1000;
+    }
+
+
     public static void givePlayerItem(ServerPlayerEntity player, ItemStack item) {
         ItemEntity itemEntity;
         boolean bl = player.getInventory().insertStack(item);
@@ -68,7 +73,7 @@ public class Util {
                 SoundEvents.ENTITY_ITEM_PICKUP,
                 SoundCategory.PLAYERS,
                 0.2f,
-                ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7f + 1.0f) * 2.0f);
+                (player.getRandom().nextFloat() * 0.7f + 1.0f) * 2.0f);
         player.currentScreenHandler.sendContentUpdates();
     }
 
@@ -101,6 +106,6 @@ public class Util {
             }
         }
 
-        return new int[]{-1};
+        return new int[0];
     }
 }

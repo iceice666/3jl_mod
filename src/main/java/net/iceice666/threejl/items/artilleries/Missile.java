@@ -14,18 +14,20 @@ import net.minecraft.world.World;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static net.iceice666.threejl.Util.damageItem;
 import static net.iceice666.threejl.items.artilleries.Artillery.getTntEntity;
-import static net.iceice666.threejl.registers.ItemRegister.utils.isPlayerInSurvival;
-import static net.iceice666.threejl.util.damageItem;
+import static net.iceice666.threejl.registers.ItemRegister.Utils.isPlayerInSurvival;
 
 
 public class Missile {
 
-
     // A constant key to check if the item has a specific NBT tag that marks it as a missile.
-    public final static String IS_MISSILE = "is_missile";
+    public static final String IS_MISSILE = "is_missile";
     // A static Vec3d to hold the position of the target where the missile will strike.
     static HashMap<UUID, Vec3d> targetPos = new HashMap<>();
+
+    private Missile() {
+    }
 
     // This method handles the custom behavior when the item is used.
     public static TypedActionResult<ItemStack> register(PlayerEntity player, World world, Hand hand) {
@@ -48,40 +50,16 @@ public class Missile {
                             offhandItemStack.hasNbt() && offhandItemStack.getNbt().getBoolean(IS_MISSILE))
             ) return TypedActionResult.pass(ItemStack.EMPTY);
 
-            // Initialize the distance for raycasting to find the target position.
-            float distance = 0.25f;
-            while (true) {
-                // Perform a raycast to find a target up to a certain distance.
-                HitResult hitResult = player.raycast(distance, 1.0f, false);
+            // Get target block
+            var targetBlockPos = getTargetBlock(player);
 
-                // Get the type of hit result, could be entity or block.
-                HitResult.Type type = hitResult.getType();
+            // Save to map
+            targetPos.put(playerUuid, targetBlockPos);
 
-                // Convert the hit position result to a Vec3d and adjust to the center of the block.
-                var hitResultPos = hitResult.getPos();
-                targetPos.put(playerUuid, new Vec3d(
-                        Math.floor(hitResultPos.x) + 0.5,
-                        Math.floor(hitResultPos.y) + 1.5,
-                        Math.floor(hitResultPos.z) + 0.5
-                ));
-
-                // If the target is above the world's max height or blow the world's min height, ignore it.
-                if (targetPos.get(playerUuid).getY() > 320 || targetPos.get(playerUuid).getY() < -64) {
-                    return TypedActionResult.pass(ItemStack.EMPTY);
-                }
-
-                // If the raycast hit an entity or a block, break the loop; the target is found.
-                if (type == HitResult.Type.ENTITY || type == HitResult.Type.BLOCK) {
-                    break;
-                } else {
-                    // Otherwise, increase the distance and try again.
-                    distance += 0.25f;
-                    targetPos.put(playerUuid, null);
-                }
-            }
+            if (targetBlockPos == null) return TypedActionResult.pass(ItemStack.EMPTY);
 
             // Send a message to the player with the coordinates of the target.
-            player.sendMessage(Text.of("Target found at" + targetPos.get(playerUuid)));
+            player.sendMessage(Text.of("Target found at" + targetBlockPos));
 
             return TypedActionResult.success(offhandItemStack);
 
@@ -97,12 +75,28 @@ public class Missile {
             // Check if the item is a carrot on a stick with the missile NBT tag and a target has been set.
             if (
                     !(mainhandItemStack.isOf(net.minecraft.item.Items.CARROT_ON_A_STICK) &&
-                            mainhandItemStack.hasNbt() && mainhandItemStack.getNbt().getBoolean(IS_MISSILE) &&
-                            targetPos.get(playerUuid) != null)
+                            mainhandItemStack.hasNbt() && mainhandItemStack.getNbt().getBoolean(IS_MISSILE))
             ) return TypedActionResult.pass(ItemStack.EMPTY);
 
+
+            Vec3d targetBlockPos;
+
+
+            if (player.isSneaking()) {
+
+                // Get target block
+                targetBlockPos = getTargetBlock(player);
+                if (targetBlockPos == null) return TypedActionResult.pass(ItemStack.EMPTY);
+
+            } else {
+                targetBlockPos = targetPos.get(playerUuid);
+            }
+
+            if (null == targetBlockPos) return TypedActionResult.pass(ItemStack.EMPTY);
+
+
             // Get the adjusted tnt entity.
-            TntEntity tntEntity = getTntEntity(player, world, targetPos.get(playerUuid));
+            TntEntity tntEntity = getTntEntity(player, world, targetBlockPos, true);
             // Add the primed TNT to the world, launching the missile.
             world.spawnEntity(tntEntity);
 
@@ -123,4 +117,34 @@ public class Missile {
     }
 
 
+    static Vec3d getTargetBlock(PlayerEntity player) {
+
+        // Perform a raycast to find a target up to a certain distance.
+        HitResult hitResult = player.raycast(256f, 1.0f, false);
+
+        // Get the type of hit result, could be entity or block.
+        HitResult.Type type = hitResult.getType();
+
+        // If the raycast hit an entity or a block, break the loop; the target is found.
+        // Otherwise, return.
+        if (type == HitResult.Type.MISS) {
+            return null;
+        }
+
+        var hitResultPos = hitResult.getPos();
+
+        // If the target is above the world's max height or blow the world's min height, ignore it.
+        if (hitResult.getPos().getY() > 320 || hitResult.getPos().getY() < -64) {
+            return null;
+        }
+
+        // Convert the hit position result to a Vec3d and adjust to the center of the block.
+        // And return.
+        return new Vec3d(
+                Math.floor(hitResultPos.x) + 0.5,
+                Math.floor(hitResultPos.y) + 1.5,
+                Math.floor(hitResultPos.z) + 0.5
+        );
+
+    }
 }

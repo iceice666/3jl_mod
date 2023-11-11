@@ -11,16 +11,18 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
+import static net.iceice666.threejl.Util.givePlayerItem;
 import static net.iceice666.threejl.items.Dice.IS_DICE;
 import static net.iceice666.threejl.items.Gravestone.IS_GRAVESTONE;
 import static net.iceice666.threejl.items.Gravestone.IS_TOTEM_OF_KEEP_INVENTORY;
 import static net.iceice666.threejl.items.artilleries.Missile.IS_MISSILE;
 import static net.iceice666.threejl.items.artilleries.RocketLauncher.IS_ROCKET_LAUNCHER;
-import static net.iceice666.threejl.util.givePlayerItem;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class GiveCustomCommand implements CommandRegister.Command {
+    private GiveCustomCommand() {
+    }
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("givecustom")
                 .requires(source -> source.hasPermissionLevel(1))

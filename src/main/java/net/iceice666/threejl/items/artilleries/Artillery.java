@@ -8,8 +8,10 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 public class Artillery {
+    private Artillery() {
+    }
     @NotNull
-    public static TntEntity getTntEntity(PlayerEntity player, World world, Vec3d targetPos) {
+    public static TntEntity getTntEntity(PlayerEntity player, World world, Vec3d targetPos, boolean noClip) {
         // Get the player's current position.
         Vec3d playerPos = player.getPos();
         // Calculate the motion vector for the missile based on the player's position and the target position.
@@ -20,6 +22,8 @@ public class Artillery {
         tntEntity.updatePosition(playerPos.getX(), playerPos.getY(), playerPos.getZ());
         // Set the calculated motion for the TNT entity.
         tntEntity.setVelocity(motion);
+        // Set noClip
+        tntEntity.noClip = noClip;
         // Return tnt entity
         return tntEntity;
     }

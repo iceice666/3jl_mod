@@ -22,7 +22,7 @@ public class OwnerSuit {
 
 
     public ItemStack getHelmet() {
-        ItemStack item = Items.register("leather_helmet", (Item) new DyeableArmorItem(ArmorMaterials.LEATHER,
+        ItemStack item = Items.register("leather_helmet", new DyeableArmorItem(ArmorMaterials.LEATHER,
                 ArmorItem.Type.HELMET, settings)).getDefaultStack();
 
         item.addEnchantment(Enchantments.FIRE_PROTECTION, 10);
@@ -46,7 +46,7 @@ public class OwnerSuit {
 
     public ItemStack getChestplate() {
         ItemStack item = Items.register("elytra",
-                (Item) new ElytraItem(settings)
+                new ElytraItem(settings)
         ).getDefaultStack();
 
         item.addEnchantment(Enchantments.PROTECTION, 20);
@@ -66,7 +66,7 @@ public class OwnerSuit {
     }
 
     public ItemStack getLeggings() {
-        ItemStack item = Items.register("leather_leggings", (Item) new DyeableArmorItem(ArmorMaterials.LEATHER,
+        ItemStack item = Items.register("leather_leggings", new DyeableArmorItem(ArmorMaterials.LEATHER,
                 ArmorItem.Type.LEGGINGS, settings)).getDefaultStack();
 
 
@@ -89,7 +89,7 @@ public class OwnerSuit {
 
 
     public ItemStack getBoots() {
-        ItemStack item = Items.register("leather_boots", (Item) new DyeableArmorItem(ArmorMaterials.LEATHER,
+        ItemStack item = Items.register("leather_boots", new DyeableArmorItem(ArmorMaterials.LEATHER,
                 ArmorItem.Type.BOOTS, settings)).getDefaultStack();
 
 

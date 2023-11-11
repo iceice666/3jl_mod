@@ -12,9 +12,9 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Set;
 
+import static net.iceice666.threejl.Util.checkPlayerInventoryContainsNbtItem;
+import static net.iceice666.threejl.Util.damageItem;
 import static net.iceice666.threejl.items.Gravestone.*;
-import static net.iceice666.threejl.util.checkPlayerInventoryContainsNbtItem;
-import static net.iceice666.threejl.util.damageItem;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class LivingEntityMixin {

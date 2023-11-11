@@ -7,11 +7,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
-import static net.iceice666.threejl.registers.ItemRegister.utils.isPlayerInSurvival;
+import static net.iceice666.threejl.registers.ItemRegister.Utils.isPlayerInSurvival;
 
 public class Dice {
+    public static final String IS_DICE = "is_dice";
 
-    public final static String IS_DICE = "is_dice";
+    private Dice() {
+    }
 
     public static TypedActionResult<ItemStack> register(PlayerEntity player, World world, Hand hand) {
         if (isPlayerInSurvival(player)

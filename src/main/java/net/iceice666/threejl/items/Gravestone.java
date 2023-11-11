@@ -17,7 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -86,19 +85,25 @@ public class Gravestone {
 
     // Method to distribute items to chests using Java Streams
     private static void distributeItemsToChests(PlayerInventory playerInventory, DefaultedList<ItemStack> chestInventory1, DefaultedList<ItemStack> chestInventory2) {
-        List<ItemStack> itemsToDistribute = playerInventory.combinedInventory.stream()
-                .flatMap(Collection::stream)
-                .filter(itemStack -> !shouldAvoidDrop(itemStack))
-                .toList();
-
         int chestInventory1Counter = 0;
         int chestInventory2Counter = 0;
 
-        for (ItemStack itemStack : itemsToDistribute) {
-            if (chestInventory1Counter < 27) {
-                chestInventory1.set(chestInventory1Counter++, itemStack);
-            } else {
-                chestInventory2.set(chestInventory2Counter++, itemStack);
+        for (List<ItemStack> list : playerInventory.combinedInventory) {
+
+            for (int i = 0; i < list.size(); ++i) {
+                ItemStack itemStack = list.get(i);
+
+                if (shouldAvoidDrop(itemStack)) continue;
+
+                if (chestInventory1Counter < 27) {
+                    chestInventory1.set(chestInventory1Counter, itemStack);
+                    ++chestInventory1Counter;
+                } else {
+                    chestInventory2.set(chestInventory2Counter, itemStack);
+                    ++chestInventory2Counter;
+                }
+
+                list.set(i, ItemStack.EMPTY);
             }
         }
     }

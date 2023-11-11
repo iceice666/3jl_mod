@@ -25,7 +25,9 @@ public class ItemRegister {
         UseItemCallback.EVENT.register(RocketLauncher::register);
     }
 
-    public static class utils {
+    public static class Utils {
+        private Utils() {
+        }
         public static boolean isPlayerInSurvival(PlayerEntity player) {
             return !player.isSpectator();
         }
@@ -33,6 +35,8 @@ public class ItemRegister {
 
 
     public static class Item {
+        private Item() {
+        }
 
         public static final String IS_DISPOSABLE = "is_disposable";
     }

@@ -9,10 +9,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
-import static net.iceice666.threejl.util.damageItem;
+import static net.iceice666.threejl.Util.damageItem;
 
 public class RocketLauncher {
-    public final static String IS_ROCKET_LAUNCHER = "is_rocket_launcher";
+    public static final String IS_ROCKET_LAUNCHER = "is_rocket_launcher";
+
+    private RocketLauncher() {
+    }
 
     public static TypedActionResult<ItemStack> register(PlayerEntity player, World world, Hand hand) {
         if (hand != Hand.MAIN_HAND) return TypedActionResult.pass(ItemStack.EMPTY);

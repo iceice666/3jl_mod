@@ -38,12 +38,27 @@ public class RedeemCodeCommand {
 
     class RedeemCode {
         @NotNull
-        String code;
-        String msg;
-        Long expireTime;
-        int maxUseCount = -1;
+       private String code;
+       private String msg="";
+       private Long expiredTime=-1;
+       private int curUseCount=0;
+       private int maxUseCount = -1;
 
-        List<ItemStack> rewards;
+      private  List<ItemStack> rewards;
+
+        public String getCode() {return this.code;}
+        
+        public String getMsg() {return this.msg;}
+        public void setMsg(String s ) {this.msg = s;}
+        
+        public Long getExpiredTime(){return this.expiredTime;}
+        public void setExpiredTime(Long l){this.expiredTime=l;}
+        
+        public int getCurUseCount(){return this.curUseCount;}
+        public void setCurUseCount(int l){this.curUseCount=i;}
+        
+        public int getMaxUseCount(){return this.maxUseCount;}
+        public void setMaxUseCount(int l){this.maxUseCount=i;}
 
 
         public RedeemCode(String code) {
@@ -58,7 +73,23 @@ public class RedeemCodeCommand {
     public RedeemCodeSystem(){}
 
     void add(RedeemCode rc){
-redeemCodeList.put(rc.code, rc);
+        redeemCodeList.put(rc.getCode(), rc);
     }
+
+    RedeemCode remove(String key){
+        var rc = redeemCodeList.get(key);
+        redeemCodeList.remove(key);
+        return rc;
+    }
+    
+    List<ItemStack> redeem(String code){
+        if (!redeemCodeList.contains(code)) return null;
+        var rc = redeemCodeList.get(code);
+        if (getCurrentUnixTimeStamp() >rc.getExpiredTime() ) return null;
+        if (rc.getMaxUseCount() >0) rc.setCurUseCount(rc.getCurUseCount+1);
+        return rc.getRewards();
+    }
+
+      
   }
 }

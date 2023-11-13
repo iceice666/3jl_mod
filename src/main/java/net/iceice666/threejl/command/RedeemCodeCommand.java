@@ -37,10 +37,11 @@ public class RedeemCodeCommand {
 
 
     class RedeemCode {
+        @NotNull
         String code;
         String msg;
         Long expireTime;
-        int maxUseCount;
+        int maxUseCount = -1;
 
         List<ItemStack> rewards;
 
@@ -49,4 +50,15 @@ public class RedeemCodeCommand {
             this.code = code;
         }
     }
+
+
+  class RedeemCodeSystem {
+    HashMap<String, RedemCode> redeemCodeList = new HashMap<>();
+
+    public RedeemCodeSystem(){}
+
+    void add(RedeemCode rc){
+redeemCodeList.put(rc.code, rc);
+    }
+  }
 }

@@ -1,43 +1,40 @@
 {
-	"schemaVersion": 1,
-	"id": "threejl_mod",
-	"version": "${version}",
-	"name": "3JL server mod",
-	"description": "This a mod for 3JL server.",
-	"authors": [
-		"iceice666",
-		"coffeecat2006"
-	],
-	"contact": {
-		"homepage": "https://github.com/iceice666/3jl_mod",
-		"sources": "https://github.com/iceice666/3jl_mod"
-	},
-	"license": "MIT",
-	"icon": "assets/threejl_mod/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"net.iceice666.threejl.Mod"
-		],
-		"client": [
-			"net.iceice666.threejl.ModClient"
-		]
-	},
-	"mixins": [
-		"threejl_mod.mixins.json",
-		{
-			"config": "threejl_mod.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"accessWidener": ".accesswidener",
-	"depends": {
-		"fabricloader": ">=0.14.22",
-		"minecraft": "1.20.x",
-		"java": ">=17",
-		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
-	}
+  "schemaVersion": 1,
+  "id": "threejl_mod",
+  "version": "${version}",
+  "name": "3JL server mod",
+  "description": "This a mod for 3JL server.",
+  "authors": [
+    "iceice666",
+    "coffeecat2006"
+  ],
+  "contact": {
+    "homepage": "https://github.com/iceice666/3jl_mod",
+    "sources": "https://github.com/iceice666/3jl_mod"
+  },
+  "license": "MIT",
+  "icon": "assets/threejl_mod/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.iceice666.threejl.Mod"
+    ]
+  },
+  "mixins": [
+    "threejl_mod.mixins.json",
+    {
+      "config": "threejl_mod.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "accessWidener": ".accesswidener",
+  "depends": {
+    "fabricloader": ">=0.14.22",
+    "minecraft": "1.20.x",
+    "java": ">=17",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
 }

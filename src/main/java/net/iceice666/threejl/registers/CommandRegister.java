@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.iceice666.threejl.command.GiveCustomCommand;
 import net.iceice666.threejl.command.KillMeCommand;
 import net.iceice666.threejl.command.RedeemCodeCommand;
+import net.iceice666.threejl.command.TestModCommand;
 
 
 public class CommandRegister {
@@ -12,11 +13,8 @@ public class CommandRegister {
                     KillMeCommand.register(dispatcher);
                     GiveCustomCommand.register(dispatcher);
             RedeemCodeCommand.register(dispatcher);
-
+            TestModCommand.register(dispatcher);
                 }
         );
-
     }
-
-
 }

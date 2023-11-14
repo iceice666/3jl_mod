@@ -13,7 +13,6 @@ import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.iceice666.threejl.items.Dice;
 import net.iceice666.threejl.items.artilleries.Missile;
 import net.iceice666.threejl.items.artilleries.RocketLauncher;
-import net.minecraft.entity.player.PlayerEntity;
 
 public class ItemRegister {
 
@@ -23,14 +22,6 @@ public class ItemRegister {
         UseItemCallback.EVENT.register(Dice::register);
         UseItemCallback.EVENT.register(Missile::register);
         UseItemCallback.EVENT.register(RocketLauncher::register);
-    }
-
-    public static class Utils {
-        private Utils() {
-        }
-        public static boolean isPlayerInSurvival(PlayerEntity player) {
-            return !player.isSpectator();
-        }
     }
 
 

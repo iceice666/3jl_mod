@@ -22,21 +22,21 @@ import java.util.UUID;
 import static net.iceice666.threejl.Util.damageItem;
 import static net.iceice666.threejl.Util.getCurrentUnixTimestamp;
 import static net.iceice666.threejl.items.artilleries.Artillery.getTntEntity;
-import static net.iceice666.threejl.registers.ItemRegister.Utils.isPlayerInSurvival;
 
 
 public class Missile {
 
     // A constant key to check if the item has a specific NBT tag that marks it as a missile.
     public static final String IS_MISSILE = "is_missile";
+    static final TypedActionResult<ItemStack> FAILED = TypedActionResult.pass(ItemStack.EMPTY);
     // A static Vec3d to hold the position of the target where the missile will strike.
     static HashMap<UUID, Vec3d> targetPos = new HashMap<>();
     static HashMap<UUID, Long> cooldown = new HashMap<>();
     static HashMap<UUID, Long> prevClick = new HashMap<>();
 
+
     private Missile() {
     }
-
 
     static boolean doOffhand(ServerPlayerEntity player) {
         // Get target block
@@ -104,10 +104,6 @@ public class Missile {
 
         ServerPlayerEntity player = (ServerPlayerEntity) p;
 
-        // Check if the player is not in survival mode, if so, nothing happens.
-        if (!isPlayerInSurvival(player)) return TypedActionResult.pass(ItemStack.EMPTY);
-
-
         // Check if the off-hand is used.
         if (hand == Hand.OFF_HAND) {
 
@@ -119,11 +115,11 @@ public class Missile {
             if (
                     !(offhandItemStack.isOf(net.minecraft.item.Items.CARROT_ON_A_STICK) &&
                             offhandItemStack.hasNbt() && offhandItemStack.getNbt().getBoolean(IS_MISSILE))
-            ) return TypedActionResult.pass(ItemStack.EMPTY);
+            ) return FAILED;
 
             // Find target
             return doOffhand(player) ?
-                    TypedActionResult.success(offhandItemStack) : TypedActionResult.pass(ItemStack.EMPTY);
+                    TypedActionResult.success(offhandItemStack) : FAILED;
 
 
         } else if (hand == Hand.MAIN_HAND) {
@@ -137,7 +133,7 @@ public class Missile {
             if (
                     !(mainhandItemStack.isOf(net.minecraft.item.Items.CARROT_ON_A_STICK) &&
                             mainhandItemStack.hasNbt() && mainhandItemStack.getNbt().getBoolean(IS_MISSILE))
-            ) return TypedActionResult.pass(ItemStack.EMPTY);
+            ) return FAILED;
 
             // Get player UUID
             UUID playerUuid = player.getUuid();
@@ -159,7 +155,7 @@ public class Missile {
                                                 .withColor(Formatting.RED)
                                 )
                 ));
-                return TypedActionResult.pass(ItemStack.EMPTY);
+                return FAILED;
             }
 
 
@@ -170,7 +166,7 @@ public class Missile {
             if (prevClick.get(playerUuid) == null
                     || currentUnixTimestamp - prevClick.get(playerUuid) > 1) {
                 prevClick.put(playerUuid, currentUnixTimestamp);
-                return TypedActionResult.pass(ItemStack.EMPTY);
+                return FAILED;
             }
 
 
@@ -184,7 +180,7 @@ public class Missile {
 
                 // Launch
                 return doMainhand(player, world, mainhandItemStack, targetBlockPos) ?
-                        TypedActionResult.success(mainhandItemStack) : TypedActionResult.pass(ItemStack.EMPTY);
+                        TypedActionResult.success(mainhandItemStack) : FAILED;
             }
 
             // This missile is in cooldown
@@ -198,13 +194,13 @@ public class Missile {
                                             .withFormatting(Formatting.BOLD)
                             )
             ));
-            return TypedActionResult.success(ItemStack.EMPTY);
+            return FAILED;
 
 
         }
 
         // If none of the above conditions are met, do nothing.
-        return TypedActionResult.pass(ItemStack.EMPTY);
+        return FAILED;
     }
 
 

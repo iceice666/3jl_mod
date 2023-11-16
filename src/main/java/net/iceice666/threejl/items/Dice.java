@@ -3,9 +3,7 @@ package net.iceice666.threejl.items;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
 
 public class Dice {
     public static final String IS_DICE = "is_dice";
@@ -13,7 +11,7 @@ public class Dice {
     private Dice() {
     }
 
-    public static TypedActionResult<ItemStack> register(PlayerEntity player, World world, Hand hand) {
+    public static TypedActionResult<ItemStack> register(PlayerEntity player) {
         if (!player.isSpectator()
                 && !player.getMainHandStack().isEmpty()
 

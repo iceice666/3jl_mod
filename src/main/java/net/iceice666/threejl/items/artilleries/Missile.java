@@ -207,7 +207,7 @@ public class Missile {
     static Vec3d getTargetBlock(PlayerEntity player) {
 
         // Perform a raycast to find a target up to a certain distance.
-        HitResult hitResult = player.raycast(256f, 1.0f, false);
+        HitResult hitResult = player.raycast(128f, 1.0f, false);
 
         // Get the type of hit result, could be entity or block.
         HitResult.Type type = hitResult.getType();

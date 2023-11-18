@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -42,7 +43,7 @@ public class Util {
         else return false;
 
 
-        return itemStack.isOf(item) && doesContain(itemStack.getOrCreateNbt(), nbtCompound);
+        return (Items.AIR.getDefaultStack().isOf(item) || itemStack.isOf(item)) && doesContain(itemStack.getOrCreateNbt(), nbtCompound);
 
     }
 

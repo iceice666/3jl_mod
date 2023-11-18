@@ -67,14 +67,18 @@ public class JesusPunch {
 
         var targetPlayerPos = targetPlayer.getPos();
 
-        targetPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20, 255));
+        targetPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 10, 255));
 
         targetPlayer.playSound(SoundEvent.of(
                 new Identifier("minecraft", "block.anvil.land")
-        ), 2, 1);
+        ), 1, 1);
 
         targetPlayer.playSound(SoundEvent.of(
                 new Identifier("minecraft", "entity.player.hurt")
+        ), 1, 1);
+
+        targetPlayer.playSound(SoundEvent.of(
+                new Identifier("minecraft", "item.trident.thunder")
         ), 1, 1);
 
 
@@ -92,7 +96,8 @@ public class JesusPunch {
                 0.5
         );
 
-        targetPlayer.setHealth(1);
+        if (targetPlayer.getHealth() > 6) targetPlayer.setHealth(6);
+        else targetPlayer.setHealth(targetPlayer.getHealth() - 1);
 
         targetPlayer.networkHandler.sendPacket(new TitleFadeS2CPacket(
                 10, 60, 10)

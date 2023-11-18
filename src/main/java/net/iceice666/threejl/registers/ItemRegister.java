@@ -13,9 +13,11 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.iceice666.threejl.items.Dice;
 import net.iceice666.threejl.items.JesusPunch;
+import net.iceice666.threejl.items.Toolbox;
 import net.iceice666.threejl.items.artilleries.Missile;
 import net.iceice666.threejl.items.artilleries.RocketLauncher;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
@@ -29,10 +31,15 @@ public class ItemRegister {
                         -> Dice.register(player)
         );
         UseItemCallback.EVENT.register(
-                Missile::register
+                (PlayerEntity player, World world, Hand hand) ->
+                        Missile.register((ServerPlayerEntity) player, world, hand)
         );
         UseItemCallback.EVENT.register(
                 RocketLauncher::register
+        );
+        UseItemCallback.EVENT.register(
+                (PlayerEntity player, World world, Hand hand) ->
+                        Toolbox.register((ServerPlayerEntity) player, hand)
         );
 
 

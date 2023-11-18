@@ -13,6 +13,7 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static net.iceice666.threejl.Util.givePlayerItem;
 import static net.iceice666.threejl.items.Dice.IS_DICE;
 import static net.iceice666.threejl.items.JesusPunch.IS_JESUS_PUNCH;
+import static net.iceice666.threejl.items.Toolbox.IS_TOOLBOX_TOOL;
 import static net.iceice666.threejl.items.artilleries.Missile.IS_MISSILE;
 import static net.iceice666.threejl.items.artilleries.RocketLauncher.IS_ROCKET_LAUNCHER;
 import static net.iceice666.threejl.items.gravestones.Gravestone.IS_GRAVESTONE;
@@ -33,13 +34,14 @@ public class GiveCustomCommand {
                 .then(generateCommandNode(IS_ROCKET_LAUNCHER))
                 .then(generateCommandNode(IS_DICE))
                 .then(generateCommandNode(IS_JESUS_PUNCH))
+                .then(generateCommandNode(IS_TOOLBOX_TOOL))
 
         );
 
 
     }
 
-    public static LiteralArgumentBuilder<ServerCommandSource> generateCommandNode(String cmd) {
+    static LiteralArgumentBuilder<ServerCommandSource> generateCommandNode(String cmd) {
 
 
         String finalCmd = cmd.startsWith("is_") ? cmd.substring(3) : cmd;

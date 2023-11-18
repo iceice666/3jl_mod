@@ -100,9 +100,8 @@ public class Missile {
     }
 
     // This method handles the custom behavior when the item is used.
-    public static TypedActionResult<ItemStack> register(PlayerEntity p, World world, Hand hand) {
+    public static TypedActionResult<ItemStack> register(ServerPlayerEntity player, World world, Hand hand) {
 
-        ServerPlayerEntity player = (ServerPlayerEntity) p;
 
         // Check if the off-hand is used.
         if (hand == Hand.OFF_HAND) {

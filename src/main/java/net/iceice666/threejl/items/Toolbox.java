@@ -18,96 +18,117 @@ import static net.iceice666.threejl.Util.isHeldItemValid;
 
 public class Toolbox {
 
+    // NBT key for identifying toolbox items
     public static final String IS_TOOLBOX_TOOL = "is_toolbox_tool";
+    // Constant for indicating a failed action
     static final TypedActionResult<ItemStack> FAILED = TypedActionResult.pass(ItemStack.EMPTY);
 
+    // Private constructor to prevent instantiation
     private Toolbox() {
     }
 
+    // Method to get the toolbox item from the player's inventory
     static ItemStack getToolbox(PlayerEntity player) {
-
         for (ItemStack itemStack : player.getInventory().main) {
             if (
-                    "toolbox".equalsIgnoreCase(itemStack.getName().getString())
-                            && itemStack.isOf(Items.SHULKER_BOX)
-            ) return itemStack;
+                    "toolbox".equalsIgnoreCase(itemStack.getName().getString()) &&
+                            (
+                                    itemStack.isOf(Items.SHULKER_BOX)
+                                            || itemStack.isOf(Items.WHITE_SHULKER_BOX)
+                                            || itemStack.isOf(Items.ORANGE_SHULKER_BOX)
+                                            || itemStack.isOf(Items.MAGENTA_SHULKER_BOX)
+                                            || itemStack.isOf(Items.LIGHT_BLUE_SHULKER_BOX)
+                                            || itemStack.isOf(Items.YELLOW_SHULKER_BOX)
+                                            || itemStack.isOf(Items.LIME_SHULKER_BOX)
+                                            || itemStack.isOf(Items.PINK_SHULKER_BOX)
+                                            || itemStack.isOf(Items.GRAY_SHULKER_BOX)
+                                            || itemStack.isOf(Items.LIGHT_GRAY_SHULKER_BOX)
+                                            || itemStack.isOf(Items.CYAN_SHULKER_BOX)
+                                            || itemStack.isOf(Items.PURPLE_SHULKER_BOX)
+                                            || itemStack.isOf(Items.BLUE_SHULKER_BOX)
+                                            || itemStack.isOf(Items.BROWN_SHULKER_BOX)
+                                            || itemStack.isOf(Items.GREEN_SHULKER_BOX)
+                                            || itemStack.isOf(Items.RED_SHULKER_BOX)
+                                            || itemStack.isOf(Items.BLACK_SHULKER_BOX)
+                            )
+            )
+                return itemStack;
         }
-
         return Items.AIR.getDefaultStack();
     }
 
+    // Method to handle the registration of toolbox actions
     public static TypedActionResult<ItemStack> register(ServerPlayerEntity player, Hand hand) {
-        if (hand != Hand.MAIN_HAND) return FAILED;
+        // Check if the action is performed with the main hand
+        if (hand != Hand.MAIN_HAND)
+            return FAILED;
 
+        // Create NBT compound for toolbox identification
         var nbt = new NbtCompound();
         nbt.putBoolean(IS_TOOLBOX_TOOL, true);
 
-        if (!isHeldItemValid(player, hand, Items.AIR, nbt)) return FAILED;
+        // Check if the held item is valid for toolbox action
+        if (!isHeldItemValid(player, hand, Items.AIR, nbt))
+            return FAILED;
 
+        // Get the toolbox item from the player's inventory
         ItemStack shulkerboxItem = getToolbox(player);
-        if (shulkerboxItem.isOf(Items.AIR)) return FAILED;
+        if (shulkerboxItem.isOf(Items.AIR))
+            return FAILED;
 
-        NbtList boxInventory = (NbtList) shulkerboxItem.getNbt().getCompound("BlockEntityTag").get("Items");
+        // Get the inventory of the toolbox item
+        NbtList boxInventory = shulkerboxItem.getOrCreateSubNbt("BlockEntityTag").getList("Items", NbtElement.COMPOUND_TYPE);
 
-        if (boxInventory == null)
-            boxInventory = new NbtList();
-
-        // Get selected item nbt
+        // Create NBT compound for the selected item
         NbtCompound mainhandItemNbt = new NbtCompound();
         player.getMainHandStack().writeNbt(mainhandItemNbt);
-        // remove toolbox_slot nbt
-        mainhandItemNbt.getCompound("tag").remove("toolbox_slot");
-        // Get selected item slot of toolbox
         int mainhandItemSlot = mainhandItemNbt.getCompound("tag").getInt("toolbox_slot");
-        // Put item back to toolbox
-        boxInventory.add(mainhandItemSlot, mainhandItemNbt);
+        mainhandItemNbt.getCompound("tag").remove("toolbox_slot");
+
+        int swappedItemIndex = player.isSneaking() ? mainhandItemSlot - 1 : mainhandItemSlot + 1;
+        swappedItemIndex = (swappedItemIndex + boxInventory.size()) % boxInventory.size();
+
+        // Get the swapped item from the toolbox
+        NbtCompound swappedItemNbt = (NbtCompound) boxInventory.remove(swappedItemIndex);
+        // Put the item back to the toolbox
+        boxInventory.add(swappedItemIndex, mainhandItemNbt);
 
 
-        // Get swapped item nbt
-        NbtCompound swappedItemNbt;
-        int swappedItemIndex;
-
-        if (player.isSneaking())
-            swappedItemIndex = mainhandItemSlot - 1;
-        else
-            swappedItemIndex = mainhandItemSlot + 1;
-
-        if (swappedItemIndex >= boxInventory.size())
-            swappedItemIndex = 0;
-        else if (swappedItemIndex < 0)
-            swappedItemIndex = boxInventory.size() - 1;
-
-        swappedItemNbt = (NbtCompound) boxInventory.remove(swappedItemIndex);
-
-
+        // Re-order toolbox items and handle overflow
         Iterator<NbtElement> it = boxInventory.iterator();
-        // Re-order toolbox items
-        for (int i = 0; it.hasNext(); i++) {
+        int i = -1;
+        while (it.hasNext()) {
             NbtCompound itemNbt = (NbtCompound) it.next();
+            var item = ItemStack.fromNbt(itemNbt);
 
-            if (i >= 27) { // Overflow!
-                givePlayerItem(player, ItemStack.fromNbt(itemNbt));
+            if (item.isOf(Items.AIR)) {
                 it.remove();
-                player.sendMessage(Text.of("Please ensure at least 1 empty slot in your toolbox!"));
                 continue;
             }
 
-            itemNbt.putInt("Slot", i);
+            i++;
 
+            if (i >= 27) { // Overflow!
+                givePlayerItem(player, item);
+                it.remove();
+                player.sendMessage(Text.of("Something go wrongly cause your toolbox overflow!"));
+                continue;
+            }
+
+            if (i == swappedItemIndex)
+                continue;
+
+            itemNbt.putInt("Slot", i);
         }
 
-
-        // Convert nbt to ItemStack
+        // Convert NBT to ItemStack for the swapped item
         ItemStack convertedItem = ItemStack.fromNbt(swappedItemNbt);
-        // Add IS_TOOLBOX_TOOL nbt
         convertedItem.getOrCreateNbt().putBoolean(IS_TOOLBOX_TOOL, true);
-        // Add slot info
         convertedItem.getNbt().putInt("toolbox_slot", swappedItemIndex);
-        // Add to selected item slot
         player.getInventory().setStack(player.getInventory().selectedSlot, convertedItem);
 
-        // Update shulkerbox
-        shulkerboxItem.getNbt().getCompound("BlockEntityTag").put("Items", boxInventory);
+        // Update shulkerbox with the modified inventory
+        shulkerboxItem.getOrCreateSubNbt("BlockEntityTag").put("Items", boxInventory);
 
         return TypedActionResult.pass(convertedItem);
     }

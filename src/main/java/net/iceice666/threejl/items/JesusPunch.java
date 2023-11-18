@@ -67,7 +67,9 @@ public class JesusPunch {
 
         var targetPlayerPos = targetPlayer.getPos();
 
-        targetPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 10, 255));
+        targetPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 60, 255));
+        targetPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 60, 255));
+        targetPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 60, 255));
 
         targetPlayer.playSound(SoundEvent.of(
                 new Identifier("minecraft", "block.anvil.land")
@@ -96,8 +98,6 @@ public class JesusPunch {
                 0.5
         );
 
-        if (targetPlayer.getHealth() > 6) targetPlayer.setHealth(6);
-        else targetPlayer.setHealth(targetPlayer.getHealth() - 1);
 
         targetPlayer.networkHandler.sendPacket(new TitleFadeS2CPacket(
                 10, 60, 10)
@@ -107,8 +107,7 @@ public class JesusPunch {
                 ((MutableText) Text.of("喝啊！"))
                         .setStyle(
                                 Style.EMPTY
-                                        .withColor(Formatting.RED
-                                        )
+                                        .withColor(Formatting.RED)
                         ))
         );
 
@@ -116,8 +115,7 @@ public class JesusPunch {
                 ((MutableText) Text.of("任何邪惡！終將繩之以法！"))
                         .setStyle(
                                 Style.EMPTY
-                                        .withColor(Formatting.RED
-                                        )
+                                        .withColor(Formatting.RED)
                         ))
         );
 

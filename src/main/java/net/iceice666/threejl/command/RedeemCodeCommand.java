@@ -29,6 +29,8 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class RedeemCodeCommand {
+    private RedeemCodeCommand() {
+    }
 
     public static void onServerStart() {
 
